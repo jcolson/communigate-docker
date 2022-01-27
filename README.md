@@ -11,6 +11,5 @@ docker run -it \
 -p 8100:8100 \
 -p 9100:9100 \
 -v ${VOLUME}:/var/CommuniGate \
-karmanet/communigate \
-sh
+karmanet/communigate
 ```
