@@ -3,10 +3,10 @@
 ## no architecture/version forced
 
 ```shell
-docker stop communigate || TRUE && \
-docker rm communigate || TRUE && \
-export VOLUME=/Users/jcolson/communigate && \
-docker run -it \
+docker stop communigate || true && \
+docker rm communigate || true && \
+export VOLUME=/mnt/data/communigate && \
+docker run -d \
 --name communigate \
 -p 8010:8010 \
 -p 9010:9010 \
