@@ -8,67 +8,76 @@ COMMUNIGATE_URL_i386=https://www.communigate.com/pub/CommuniGatePro/CGatePro-Lin
 COMMUNIGATE_URL_arm=https://www.communigate.com/pub/CommuniGatePro/CGatePro-Linux_armhf.deb
 
 .PHONY: all
-all: push
+all: push do_manifest
 
 .PHONY: build
-build: build_i386 build_amd64 build_arm
+build: buildx_i386 buildx_amd64 buildx_arm
 
-.PHONY: build_amd64
-build_amd64: Dockerfile
+.PHONY: do_manifest
+do_manifest:
+	docker manifest create \
+		$(NAME):$(IMAGE_VERSION) \
+		--amend $(NAME):$(IMAGE_VERSION)-amd64 \
+		--amend $(NAME):$(IMAGE_VERSION)-i386 \
+		--amend $(NAME):$(IMAGE_VERSION)-arm64v8
+	docker manifest push $(NAME):$(IMAGE_VERSION)
+	docker manifest create \
+		$(NAME):latest \
+		--amend $(NAME):$(IMAGE_VERSION)-amd64 \
+		--amend $(NAME):$(IMAGE_VERSION)-i386 \
+		--amend $(NAME):$(IMAGE_VERSION)-arm64v8
+	docker manifest push $(NAME):latest
+
+.PHONY: buildx_amd64
+buildx_amd64: Dockerfile
 	docker buildx build \
 		--platform linux/amd64 \
 		--pull \
-		-t $(NAME):$(IMAGE_VERSION) \
+		-t $(NAME):$(IMAGE_VERSION)-amd64 \
 		--build-arg BASE=$(BASE) \
 		--build-arg COMMUNIGATE_URL=$(COMMUNIGATE_URL_amd64) \
 		.
-	docker tag $(NAME):$(IMAGE_VERSION) $(NAME):latest
 
 # --platform linux/arm/v7,linux/arm64/v8,linux/amd64
 
-.PHONY: build_arm
-build_arm: Dockerfile
+.PHONY: buildx_arm
+buildx_arm: Dockerfile
 	docker buildx build \
 		--platform linux/arm64/v8 \
 		--progress=plain \
 		--pull \
-		-t $(NAME):$(IMAGE_VERSION) \
+		-t $(NAME):$(IMAGE_VERSION)-arm64v8 \
 		--build-arg BASE=$(BASE)\
 		--build-arg COMMUNIGATE_URL=$(COMMUNIGATE_URL_arm) \
 		.
-	docker tag $(NAME):$(IMAGE_VERSION) $(NAME):latest
 
-.PHONY: build_i386
-build_i386: Dockerfile
+.PHONY: buildx_i386
+buildx_i386: Dockerfile
 	docker buildx build \
 		--platform linux/i386 \
 		--pull \
-		-t $(NAME):$(IMAGE_VERSION) \
+		-t $(NAME):$(IMAGE_VERSION)-i386 \
 		--build-arg BASE=$(BASE) \
 		--build-arg COMMUNIGATE_URL=$(COMMUNIGATE_URL_i386) \
 		.
-	docker tag $(NAME):$(IMAGE_VERSION) $(NAME):latest
 
 .PHONY: push
 push: push_i386 push_amd64 push_arm
 
 .PHONY: push_i386
-push_i386: build_i386
-	docker push $(NAME):$(IMAGE_VERSION)
-	docker push $(NAME):latest
+push_i386: buildx_i386
+	docker push $(NAME):$(IMAGE_VERSION)-i386
 
 .PHONY: push
 push: push_arm
 
 .PHONY: push_arm
-push_arm: build_arm
-	docker push $(NAME):$(IMAGE_VERSION)
-	docker push $(NAME):latest
+push_arm: buildx_arm
+	docker push $(NAME):$(IMAGE_VERSION)-arm64v8
 
 .PHONY: push
 push: push_amd64
 
 .PHONY: push_amd64
-push_amd64: build_amd64
-	docker push $(NAME):$(IMAGE_VERSION)
-	docker push $(NAME):latest
+push_amd64: buildx_amd64
+	docker push $(NAME):$(IMAGE_VERSION)-amd64

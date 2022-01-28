@@ -1,11 +1,12 @@
 ARG BASE
-FROM $BASE AS builder
-ARG COMMUNIGATE_URL
+FROM $BASE AS upgraded
 RUN apt-get update
 RUN apt-get upgrade
+FROM upgraded AS builder
+ARG COMMUNIGATE_URL
 RUN apt-get -y install wget
 RUN wget -O /communigate.deb $COMMUNIGATE_URL
-FROM $BASE
+FROM upgraded
 COPY --from=builder /communigate.deb /
 #--force-architecture 
 # RUN dpkg --print-architecture
