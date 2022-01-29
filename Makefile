@@ -34,6 +34,7 @@ do_manifest:
 .PHONY: buildx_amd64
 buildx_amd64: Dockerfile
 	docker buildx build \
+		--no-cache \
 		--platform linux/amd64 \
 		--pull \
 		-t $(NAME):$(IMAGE_VERSION)-amd64 \
@@ -46,6 +47,7 @@ buildx_amd64: Dockerfile
 .PHONY: buildx_arm64v8
 buildx_arm64v8: Dockerfile
 	docker buildx build \
+		--no-cache \
 		--platform linux/arm64/v8 \
 		--progress=plain \
 		--pull \
@@ -57,6 +59,7 @@ buildx_arm64v8: Dockerfile
 .PHONY: buildx_armhf
 buildx_armhf: Dockerfile
 	docker buildx build \
+		--no-cache \
 		--platform linux/armhf \
 		--progress=plain \
 		--pull \
@@ -68,6 +71,7 @@ buildx_armhf: Dockerfile
 .PHONY: buildx_i386
 buildx_i386: Dockerfile
 	docker buildx build \
+		--no-cache \
 		--platform linux/i386 \
 		--pull \
 		-t $(NAME):$(IMAGE_VERSION)-i386 \
