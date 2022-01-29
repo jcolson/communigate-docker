@@ -8,12 +8,18 @@ docker rm communigate || true && \
 export VOLUME=/mnt/data/communigate && \
 docker run -d \
 --name communigate \
--p 8010:8010 \
--p 9010:9010 \
--p 8100:8100 \
--p 9100:9100 \
+--hostname='communigate' \
+--network quassel-net \
+--restart always \
+-p 25:25 \
+-p 993:993 \
+-p 465:465 \
+-p 587:587 \
+-p 110:110 \
+-p 995:995 \
+-p 143:143 \
 -v ${VOLUME}:/var/CommuniGate \
-karmanet/communigate
+karmanet/communigate:latest
 ```
 
 ## armv7 forced version 6.2.14
@@ -69,3 +75,9 @@ docker inspect -f '{{.State.ExitCode}}' communigate
 	–	sgr-08011065a08d49f91	IPv4	POP3	TCP	110	0.0.0.0/0	–
 	–	sgr-0dc87564f393d1682	IPv6	IMAPS	TCP	993	::/0	–
 ```
+
+## ssl certs
+
+keep them up to date by copying from?
+/etc/pki/tls/certs/ca-bundle.crt
+/etc/pki/tls/certs/ca-bundle.trust.crt

@@ -6,6 +6,7 @@ SUPPLPARAMS=
 ulimit -c 2097151
 umask 0
 rm -f /var/CommuniGate/ProcessID
+cp /TrustedCerts.settings /var/CommuniGate/Settings/
 if [ -d ${BASEFOLDER} ] ; then
     echo "${BASEFOLDER} already exists..."
 else
