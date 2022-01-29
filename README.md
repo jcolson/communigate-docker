@@ -3,6 +3,7 @@
 ## no architecture/version forced
 
 ```shell
+docker pull karmanet/communigate:latest && \
 docker stop communigate || true && \
 docker rm communigate || true && \
 export VOLUME=/mnt/data/communigate && \
@@ -27,11 +28,22 @@ karmanet/communigate:latest
 for some reason the html is not getting displayed when attaching to port 8010 for initial setup on arm
 
 ```shell
+docker pull karmanet/communigate:latest && \
 docker stop communigate || true && \
 docker rm communigate || true && \
 export VOLUME=/Users/jcolson/communigate && \
 docker run -it \
 --name communigate \
+--hostname='communigate' \
+--network quassel-net \
+--restart always \
+-p 25:25 \
+-p 993:993 \
+-p 465:465 \
+-p 587:587 \
+-p 110:110 \
+-p 995:995 \
+-p 143:143 \
 -p 8010:8010 \
 -p 9010:9010 \
 -p 8100:8100 \
@@ -43,18 +55,28 @@ karmanet/communigate@
 ## amd64 forced version 6.2.14
 
 ```shell
+docker pull karmanet/communigate:7.1.1 && \
 docker stop communigate || true && \
 docker rm communigate || true && \
 export VOLUME=/Users/jcolson/communigate && \
 docker run -d \
 --name communigate \
+--hostname='communigate' \
+--network quassel-net \
+--restart always \
 -p 25:25 \
+-p 993:993 \
+-p 465:465 \
+-p 587:587 \
+-p 110:110 \
+-p 995:995 \
+-p 143:143 \
 -p 8010:8010 \
 -p 9010:9010 \
 -p 8100:8100 \
 -p 9100:9100 \
 -v ${VOLUME}:/var/CommuniGate \
-karmanet/communigate:6.2.14-amd64
+karmanet/communigate:7.1.1
 ```
 
 docker inspect -f '{{.State.ExitCode}}' communigate
